@@ -1,0 +1,40 @@
+#! /usr/bin/env node
+
+var fs = require('fs');
+var IoParser = require(__dirname + '/../lib/IoParser');
+
+console.log(process.argv);
+console.log(process.argc);
+
+var ioFile = "main.io";
+if (process.argv.length >= 3)
+    ioFile = process.argv[2];
+
+// TODO: check if file exists
+
+var ioProgram = fs.readFileSync(ioFile, 'utf8');
+
+console.log('Here is the program:\n<----------------->');
+console.log(ioProgram);
+console.log('<----------------->');
+
+try{
+    var result = IoParser.parse(ioProgram);
+    console.log();
+    console.log(result);
+}
+catch(e){
+    var strArray = [];
+    var col = e.column;
+    for (var i = 0; i < ioProgram.length; ++i){
+        strArray[i] = '-';
+    };
+    strArray[col - 1] = '^';
+
+    var out = strArray.join('');
+    console.log();
+    console.log(ioProgram);
+    console.log(out);
+    console.log();
+    console.log(e);
+}

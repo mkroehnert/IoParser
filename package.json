@@ -1,0 +1,26 @@
+{
+  "name": "IoParser",
+  "description": "Io Parser for NodeJS (PEG.js based)",
+  "author": {
+    "name": "Manfred Kroehnert",
+    "web": "https://github.com/mkroehnert"
+  },
+  "license": "BSD",
+  "version": "0.1",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/mkroehnert/IoParser.git"
+  },
+  "bugs" : { "url" : "https://github.com/mkroehnert/IoParser/issues" },
+  "main": "./bin/io-parser",
+  "bin" : { "io-parser" : "./bin/io-parser" },
+  "directories" : { "lib": "./lib" },
+  "scripts": {
+    "test": "node lib/IoParser.peg_test.js",
+    "start": "node bin/io-parser"
+  },
+  "devDependencies": {
+    "pegjs": "~0.7.0",
+    "nodeunit": "~0.7.4"
+  }
+}
