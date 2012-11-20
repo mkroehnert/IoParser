@@ -1,51 +1,9 @@
-var IoParser = require('../lib/IoParser');
-
-function makeParser(input){
-    try{
-        console.log(IoParser);
-        var result = IoParser.parse(input);
-        console.log();
-        console.log(input);
-        console.log();
-        console.log(result);
-        return result;
-    }
-    catch(e){
-        var strArray = [];
-        var col = e.column;
-        for (var i = 0; i < input.length; ++i){
-            strArray[i] = '-';
-        };
-        strArray[col - 1] = '^';
-
-        var out = strArray.join('');
-        console.log();
-        console.log(input);
-        console.log(out);
-        console.log();
-        console.log(e);
-        throw(e);
-    }
-};
-
-
-function parseOk(test, input){
-    var result;
-    test.doesNotThrow(function(){result = makeParser(input)});
-    return result;
-};
-
-function parseFail(test, input){
-    var result;
-    test.throws(function(){result = makeParser(input)});
-    return result;
-};
-
+var helper = require('./TestHelpers');
 
 exports.HexadecimalTests = {
     testSmallX: function(test){
         test.expect(3);
-        var result = parseOk(test, '0x123');
+        var result = helper.parseOk(test, '0x123');
         test.strictEqual(result.length, 1);
         test.strictEqual(result[0], 0x123);
         test.done();
@@ -53,7 +11,7 @@ exports.HexadecimalTests = {
 
     testBigX: function(test){
         test.expect(3);
-        var result = parseOk(test, '0X123');
+        var result = helper.parseOk(test, '0X123');
         test.strictEqual(result.length, 1);
         test.strictEqual(result[0], 0x123);
         test.done();
@@ -61,7 +19,7 @@ exports.HexadecimalTests = {
 
     testLettersUppercase: function(test){
         test.expect(3);
-        var result = parseOk(test, '0xABCDEF');
+        var result = helper.parseOk(test, '0xABCDEF');
         test.strictEqual(result.length, 1);
         test.strictEqual(result[0], 0xABCDEF);
         test.done();
@@ -69,7 +27,7 @@ exports.HexadecimalTests = {
 
     testLettersLowercase: function(test){
         test.expect(3);
-        var result = parseOk(test, '0xabcdef');
+        var result = helper.parseOk(test, '0xabcdef');
         test.strictEqual(result.length, 1);
         test.strictEqual(result[0], 0xABCDEF);
         test.done();
@@ -77,7 +35,7 @@ exports.HexadecimalTests = {
 
     testLettersUppercaseBigX: function(test){
         test.expect(3);
-        var result = parseOk(test, '0XABCDEF');
+        var result = helper.parseOk(test, '0XABCDEF');
         test.strictEqual(result.length, 1);
         test.strictEqual(result[0], 0xABCDEF);
         test.done();
@@ -85,7 +43,7 @@ exports.HexadecimalTests = {
 
     testLettersLowercaseBigX: function(test){
         test.expect(3);
-        var result = parseOk(test, '0Xabcdef');
+        var result = helper.parseOk(test, '0Xabcdef');
         test.strictEqual(result.length, 1);
         test.strictEqual(result[0], 0xABCDEF);
         test.done();
@@ -93,7 +51,7 @@ exports.HexadecimalTests = {
 
     testMissingDigits: function(test){
         test.expect(3);
-        var result = parseOk(test, '0x');
+        var result = helper.parseOk(test, '0x');
         test.strictEqual(result.length, 2);
         test.deepEqual(result, [0, 'ID:x']);
         test.done();
@@ -101,12 +59,9 @@ exports.HexadecimalTests = {
 
     testWrongLetterG: function(test){
         test.expect(3);
-        var result = parseOk(test, '0xg');
+        var result = helper.parseOk(test, '0xg');
         test.strictEqual(result.length, 2);
         test.deepEqual(result, [0, 'ID:xg']);
         test.done();
     },
-
-    // TODO test +/- 0xABC
-
 };

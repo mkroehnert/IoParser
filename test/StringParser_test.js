@@ -1,51 +1,9 @@
-var IoParser = require('../lib/IoParser');
-
-function makeParser(input){
-    try{
-        console.log(IoParser);
-        var result = IoParser.parse(input);
-        console.log();
-        console.log(input);
-        console.log();
-        console.log(result);
-        return result;
-    }
-    catch(e){
-        var strArray = [];
-        var col = e.column;
-        for (var i = 0; i < input.length; ++i){
-            strArray[i] = '-';
-        };
-        strArray[col - 1] = '^';
-
-        var out = strArray.join('');
-        console.log();
-        console.log(input);
-        console.log(out);
-        console.log();
-        console.log(e);
-        throw(e);
-    }
-}
-
-
-function parseOk(test, input){
-    var result;
-    test.doesNotThrow(function(){result = makeParser(input)});
-    return result;
-}
-
-function parseFail(test, input){
-    var result;
-    test.throws(function(){result = makeParser(input)});
-    return result;
-}
-
+var helper = require('./TestHelpers');
 
 exports.StringTests = {
     testEmptyString: function(test){
         test.expect(3);
-        var result = parseOk(test, '""');
+        var result = helper.parseOk(test, '""');
         test.strictEqual(result.length, 1);
         test.deepEqual(result, ['S:']);
         test.done();
@@ -53,7 +11,7 @@ exports.StringTests = {
 
     testSomeString: function(test){
         test.expect(3);
-        var result = parseOk(test, '"abc"');
+        var result = helper.parseOk(test, '"abc"');
         test.strictEqual(result.length, 1);
         test.deepEqual(result, ['S:abc']);
         test.done();
@@ -61,7 +19,7 @@ exports.StringTests = {
 
     testSomeMoreString: function(test){
         test.expect(3);
-        var result = parseOk(test, '"This could be a Hello World 123 ^ str4nge Str!ng"');
+        var result = helper.parseOk(test, '"This could be a Hello World 123 ^ str4nge Str!ng"');
         test.strictEqual(result.length, 1);
         test.deepEqual(result, ['S:This could be a Hello World 123 ^ str4nge Str!ng']);
         test.done();
@@ -69,7 +27,7 @@ exports.StringTests = {
 
     testMultilineString: function(test){
         test.expect(3);
-        var result = parseOk(test, '"""abc\ndef"""');
+        var result = helper.parseOk(test, '"""abc\ndef"""');
         test.strictEqual(result.length, 1);
         /* result =
         """abc
@@ -82,7 +40,7 @@ exports.StringTests = {
      testEscapedQuote: function(test){
         test.expect(3);
         // escaped \ is needed since \" is regarded as " in Javascript
-        var result = parseOk(test, '"abc\\"def"');
+        var result = helper.parseOk(test, '"abc\\"def"');
         test.strictEqual(result.length, 1);
         test.deepEqual(result, ['S:abc\\"def']);
         test.done();
@@ -90,7 +48,7 @@ exports.StringTests = {
 
     testBrokenString: function(test){
         test.expect(1);
-        parseFail(test, '"Invalid"String"');
+        helper.parseFail(test, '"Invalid"String"');
         test.done();
     }
 };

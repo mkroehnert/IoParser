@@ -1,49 +1,9 @@
-var IoParser = require('../lib/IoParser');
-
-function makeParser(input){
-    try{
-        console.log(IoParser);
-        var result = IoParser.parse(input);
-        console.log();
-        console.log(input);
-        console.log();
-        console.log(result);
-        return result;
-    }
-    catch(e){
-        var strArray = [];
-        var col = e.column;
-        for (var i = 0; i < input.length; ++i){
-            strArray[i] = '-';
-        };
-        strArray[col - 1] = '^';
-
-        var out = strArray.join('');
-        console.log();
-        console.log(input);
-        console.log(out);
-        console.log();
-        console.log(e);
-        throw(e);
-    }
-}
-
-
-function parseOk(test, input){
-    var result;
-    test.doesNotThrow(function(){result = makeParser(input)});
-    return result;
-}
-
-function parseFail(test, input){
-    test.throws(function(){makeParser(input)});
-}
-
+var helper = require('./TestHelpers');
 
 exports.CommentTests = {
     testPoundComment: function(test){
         test.expect(3);
-        var result = parseOk(test, '# This is a comment \n');
+        var result = helper.parseOk(test, '# This is a comment \n');
         test.strictEqual(result.length, 1);
         test.strictEqual(result[0], 'C: This is a comment ');
         test.done();
@@ -51,7 +11,7 @@ exports.CommentTests = {
 
     testPoundCommentWithoutNewline: function(test){
         test.expect(3);
-        var result = parseOk(test, '# This is a comment');
+        var result = helper.parseOk(test, '# This is a comment');
         test.strictEqual(result.length, 1);
         test.strictEqual(result[0], 'C: This is a comment');
         test.done();
@@ -59,7 +19,7 @@ exports.CommentTests = {
 
     testSlashComment: function(test){
         test.expect(3);
-        var result = parseOk(test, '// This is a comment\n');
+        var result = helper.parseOk(test, '// This is a comment\n');
         test.strictEqual(result.length, 1);
         test.strictEqual(result[0], 'C: This is a comment');
         test.done();
@@ -67,7 +27,7 @@ exports.CommentTests = {
 
     testSlashCommentWithoutNewline: function(test){
         test.expect(3);
-        var result = parseOk(test, '// This is a comment');
+        var result = helper.parseOk(test, '// This is a comment');
         test.strictEqual(result.length, 1);
         // returns nil in Io
         test.deepEqual(result, ['C: This is a comment']);
@@ -76,7 +36,7 @@ exports.CommentTests = {
 
     testSlashStarComment: function(test){
         test.expect(3);
-        var result = parseOk(test, '/* This is a comment */\n');
+        var result = helper.parseOk(test, '/* This is a comment */\n');
         test.strictEqual(result.length, 1);
         test.strictEqual(result[0], 'C: This is a comment ');
         test.done();
@@ -84,7 +44,7 @@ exports.CommentTests = {
 
     testSlashStarCommentWithoutNewline: function(test){
         test.expect(3);
-        var result = parseOk(test, '/* This is a comment */');
+        var result = helper.parseOk(test, '/* This is a comment */');
         test.strictEqual(result.length, 1);
         test.strictEqual(result[0], 'C: This is a comment ');
         test.done();
@@ -92,7 +52,7 @@ exports.CommentTests = {
 
     testMultilineSlashStarComment: function(test){
         test.expect(3);
-        var result = parseOk(test, '/* This is a comment \n it continues \n over multiple lines*/\n');
+        var result = helper.parseOk(test, '/* This is a comment \n it continues \n over multiple lines*/\n');
         test.strictEqual(result.length, 1);
         test.strictEqual(result[0], 'C: This is a comment \n it continues \n over multiple lines');
         test.done();
@@ -100,7 +60,7 @@ exports.CommentTests = {
 
     testMultilineSlashStarCommentWithoutNewline: function(test){
         test.expect(3);
-        var result = parseOk(test, '/* This is a comment \n it continues \n over multiple lines*/');
+        var result = helper.parseOk(test, '/* This is a comment \n it continues \n over multiple lines*/');
         test.strictEqual(result.length, 1);
         test.strictEqual(result[0], 'C: This is a comment \n it continues \n over multiple lines');
         test.done();
@@ -108,7 +68,7 @@ exports.CommentTests = {
 
     testNestedSlashStarComment: function(test){
         test.expect(3);
-        var result = parseOk(test, '/* This is /* a nested comment */ */');
+        var result = helper.parseOk(test, '/* This is /* a nested comment */ */');
         test.strictEqual(result.length, 1);
         test.strictEqual(result[0], 'C: This is C: a nested comment  ');
         test.done();
